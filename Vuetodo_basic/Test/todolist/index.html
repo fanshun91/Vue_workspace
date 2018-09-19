@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Todolist</title>
+  <script src="../vue.js"></script>
+</head>
+
+<body>
+  <div id="root">
+    <div>
+      <input type="text" v-model="text" />
+      <button @click="handleSubmit">提交</button>
+    </div>
+    <ul>
+      <todo-item v-for="(item, index) of list" :key="index" :todo="item" :index="index" @delete="handleDelete" />
+    </ul>
+  </div>
+  <script>
+    // 定义全局组件
+    Vue.component('todo-item', {
+      // 接受父组件的传值
+      props: ['todo', 'index'],
+      template: '<li @click="handleClick">{{todo}}</li>',
+      methods: {
+        handleClick() {
+          // 向父组件派发事件
+          this.$emit('delete', this.index)
+          console.log('click--')
+        }
+      }
+    })
+
+    // 定义局部组件
+    // const TodoItem = {
+    //   template: '<li>item</li>'
+    // }
+
+    new Vue({
+      data: {
+        text: '',
+        list: []
+      },
+      // 注册局部组件
+      // components: {
+      //   'todo-item': TodoItem
+      // },
+      methods: {
+        handleSubmit() {
+          this.list.push(this.text)
+          this.text = ''
+        },
+        handleDelete(index) {
+          this.list.splice(index, 1)
+        }
+      }
+    }).$mount('#root')
+  </script>
+</body>
+
+</html>
